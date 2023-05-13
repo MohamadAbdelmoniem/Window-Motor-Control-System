@@ -55,6 +55,7 @@ Note: Make sure to configure the necessary hardware peripherals and pin assignme
 #include "driverlib/interrupt.h"
 #include "semphr.h"
 #include "driverlib/gpio.h"
+#include "Team8Macro.h"
 
 SemaphoreHandle_t WindowUp_driverS;
 SemaphoreHandle_t WindowDown_driverS;
@@ -116,8 +117,7 @@ int main()
 
 	vTaskStartScheduler();
 	while (1)
-	{
-	}
+	{}
 }
 
 void initTask(void *params)
@@ -216,7 +216,11 @@ void GPIOA_Handler()
 	}
 }
 
-void GPIOC_Handler(){
+
+
+
+void GPIOC_Handler()
+{
 			GPIOIntClear(GPIO_PORTC_BASE, GPIO_PIN_5);
 			BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 			int flag=1;
@@ -249,46 +253,44 @@ void WindowUp_Driver(void *params)
 	{
 		xSemaphoreTake(WindowUp_driverS, portMAX_DELAY);
 		xSemaphoreTake(MotorMutex, portMAX_DELAY);
-		
-		
-	if ((GPIOPinRead(GPIO_PORTC_BASE, GPIO_PIN_5)))
+	if (xQueueReceive( xQueue, &out, 0 )== pdFALSE)
 	{
-			if (!GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_2))
+			if (!GPIOPinRead(BUTTONS_PORT, WINDOW_UP_DRIVER_PIN))
 		{
-			delayMs(50);
-			
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1, GPIO_PIN_1);
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_2, 0x0);
-		delayMs(1000);
-		if(GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_2))
+			delayMs(50);	
+			Move_Up;
+			delayMs(1000);
+		if(GPIOPinRead(BUTTONS_PORT, WINDOW_UP_DRIVER_PIN))
 		{
 			//automatic		
-			while(GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_6))
+			while(GPIOPinRead(LIMIT_SWITCHES_PORT, GPIO_PIN_6))
 			{
 				if (xQueueReceive( xQueue, &out, 0 )== pdTRUE)
 				{
+					if(out==1)
 						Obstacle();
 					break;
 				}
-				if (!GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_3) || !GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_7))
+				if (!GPIOPinRead(BUTTONS_PORT, WINDOW_DOWN_DRIVER_PIN) || !GPIOPinRead(BUTTONS_PORT, WINDOW_DOWN_PASSENGER_PIN))
 				{
 					break;
 				}
 			}
 		}
+		//MANUAL
 			else
 				{
-					
-					while (!(GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_2)) && GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_6))
+					while (!(GPIOPinRead(BUTTONS_PORT, WINDOW_UP_DRIVER_PIN)) && GPIOPinRead(LIMIT_SWITCHES_PORT, GPIO_PIN_6))
 					{
-						if (!(GPIOPinRead(GPIO_PORTC_BASE, GPIO_PIN_5)))
+						if (xQueueReceive( xQueue, &out, 0 )== pdTRUE)
 				{
+					if(out==1)
 						Obstacle();
 					break;
 				}
 						
 					}
-						GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1 | GPIO_PIN_2, 0x00);
+						Stop_Motor;
 			}
 		}
 	}
@@ -297,7 +299,8 @@ void WindowUp_Driver(void *params)
 		__WFI();
 	}
 
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1 | GPIO_PIN_2, 0x00);
+		Stop_Motor;
+		out=0;
 		xSemaphoreGive(MotorMutex);
 	}
 
@@ -311,19 +314,18 @@ void WindowDown_Driver(void *params)
 	{
 		xSemaphoreTake(WindowDown_driverS, portMAX_DELAY);
 		xSemaphoreTake(MotorMutex, portMAX_DELAY);
-			if (!GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_3))
+			if (!GPIOPinRead(BUTTONS_PORT, WINDOW_DOWN_DRIVER_PIN))
 		{
 
-			delayMs(50);
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_2, GPIO_PIN_2);
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1, 0x0);
+		delayMs(50);
+		Move_Down;
 		delayMs(1000);
-		if(GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_3))
+		if(GPIOPinRead(BUTTONS_PORT, WINDOW_DOWN_DRIVER_PIN))
 		{
 			//automatic
-			while(GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_7))
+			while(GPIOPinRead(LIMIT_SWITCHES_PORT, GPIO_PIN_7))
 			{
-				if (!GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_2) || !GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_6))
+				if (!GPIOPinRead(BUTTONS_PORT, GPIO_PIN_2) || !GPIOPinRead(BUTTONS_PORT, GPIO_PIN_6))
 				{
 					break;
 				}
@@ -333,15 +335,15 @@ void WindowDown_Driver(void *params)
 			else
 				//manual
 				{			
-					while (!(GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_3)) && GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_7))
+					while (!(GPIOPinRead(BUTTONS_PORT, WINDOW_DOWN_DRIVER_PIN)) && GPIOPinRead(LIMIT_SWITCHES_PORT, GPIO_PIN_7))
 					{
 						
 					}
-						GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1 | GPIO_PIN_2, 0x00);
+						Stop_Motor;
 			}
 	}		
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1 | GPIO_PIN_2, 0x00);
-		xSemaphoreGive(MotorMutex);
+	Stop_Motor;
+	xSemaphoreGive(MotorMutex);
 	
 }
 	}
@@ -355,27 +357,27 @@ void WindowUp_Passenger(void *params)
 		xSemaphoreTake(WindowUp_passengerS, portMAX_DELAY);
 		xSemaphoreTake(MotorMutex, portMAX_DELAY);
 		
-	if ((GPIOPinRead(GPIO_PORTC_BASE, GPIO_PIN_5)))
+	if (xQueueReceive( xQueue, &out, 0 )== pdFALSE)
 	{
-		if (!GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_6))
+		if (!GPIOPinRead(BUTTONS_PORT, WINDOW_UP_PASSENGER_PIN))
 		{
 			delayMs(50);
 		
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1, GPIO_PIN_1);
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_2, 0x00);
+		Move_Up;
 		delayMs(1000);
-		if(GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_6))
+		if(GPIOPinRead(BUTTONS_PORT, WINDOW_UP_PASSENGER_PIN))
 		{
 			
 			//automatic
-			while(GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_6))
+			while(GPIOPinRead(LIMIT_SWITCHES_PORT, GPIO_PIN_6))
 			{
-				if (!(GPIOPinRead(GPIO_PORTC_BASE, GPIO_PIN_5)))
+				if (xQueueReceive( xQueue, &out, 0 )== pdTRUE)
 				{
+					if(out==1)
 						Obstacle();
 					break;
 				}
-				if (!GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_3) || !GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_7))
+				if (!GPIOPinRead(BUTTONS_PORT, WINDOW_DOWN_DRIVER_PIN) || !GPIOPinRead(BUTTONS_PORT, WINDOW_DOWN_PASSENGER_PIN))
 				{
 					break;
 				}
@@ -385,16 +387,17 @@ void WindowUp_Passenger(void *params)
 		
 			else 
 				{
-					while (!(GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_6)) && GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_6) )
+					while (!(GPIOPinRead(BUTTONS_PORT, WINDOW_UP_PASSENGER_PIN)) && GPIOPinRead(LIMIT_SWITCHES_PORT, GPIO_PIN_6) )
 					{
 						if (xQueueReceive( xQueue, &out, 0 )== pdTRUE)
 				{
+					if(out==1)
 						Obstacle();
 					break;
 				}
 						
 					}
-						GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1 | GPIO_PIN_2, 0x00);
+						Stop_Motor;
 			}
 		}
 	}
@@ -402,8 +405,8 @@ void WindowUp_Passenger(void *params)
 		{
 			__WFI();
 	}
-		
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1 | GPIO_PIN_2, 0x00);
+		out=0;
+		Stop_Motor;
 		xSemaphoreGive(MotorMutex);
 	}
 	}
@@ -416,21 +419,19 @@ void WindowDown_Passenger(void *params)
 		xSemaphoreTake(WindowDown_passengerS, portMAX_DELAY);
 		xSemaphoreTake(MotorMutex, portMAX_DELAY);
 		
-		if (!GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_7))
+		if (!GPIOPinRead(BUTTONS_PORT, WINDOW_DOWN_PASSENGER_PIN))
 		{
 
-			delayMs(50);
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1, 0x0);
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_2, GPIO_PIN_2);
-		
+		delayMs(50);
+		Move_Down;
 		delayMs(1000);
-		if(GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_7))
+		if(GPIOPinRead(BUTTONS_PORT, WINDOW_DOWN_PASSENGER_PIN))
 		{
 			//automatic
 			
-			while(GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_7))
+			while(GPIOPinRead(LIMIT_SWITCHES_PORT, GPIO_PIN_7))
 			{
-				if (!GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_2) || !GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_6))
+				if (!GPIOPinRead(BUTTONS_PORT, WINDOW_UP_DRIVER_PIN) || !GPIOPinRead(BUTTONS_PORT, WINDOW_UP_PASSENGER_PIN))
 				{
 					break;
 				}
@@ -439,15 +440,14 @@ void WindowDown_Passenger(void *params)
 			else
 				{				
 					//manual
-					while (!(GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_7)) && GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_7))
+					while (!(GPIOPinRead(BUTTONS_PORT, WINDOW_DOWN_PASSENGER_PIN)) && GPIOPinRead(LIMIT_SWITCHES_PORT, GPIO_PIN_7))
 					{
 						
-						
 					}
-						GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1 | GPIO_PIN_2, 0x00);
+						Stop_Motor;
 			}
 		}
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1 | GPIO_PIN_2, 0x00);
+		Stop_Motor;
 		xSemaphoreGive(MotorMutex);
 	}
 }
@@ -470,11 +470,9 @@ void OnOff(void *params)
 
 void Obstacle ()
 {
-	GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1 | GPIO_PIN_2, 0x00);
-	delayMs(200);
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1, 0x0);
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_2, GPIO_PIN_2);
+		Stop_Motor;
+		delayMs(200);
+		Move_Down;
 		delayMs(500);
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1 | GPIO_PIN_2,0x00);
-	
+		Stop_Motor;	
 }

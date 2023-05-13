@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Fri May 12 21:52:24 2023
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Sat May 13 19:26:56 2023
 <BR><P>
 <H3>Maximum Stack Usage =        296 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1141,8 +1141,8 @@ Global Symbols
 <BR>[Address Reference Count : 2]<UL><LI> main.o(.text.initTask)
 <LI> startup_tm4c123.o(RESET)
 </UL>
-<P><STRONG><a name="[8d]"></a>Obstacle</STRONG> (Thumb, 74 bytes, Stack size 24 bytes, main.o(.text.Obstacle))
-<BR><BR>[Stack]<UL><LI>Max Depth = 36<LI>Call Chain = Obstacle &rArr; delayMs
+<P><STRONG><a name="[8d]"></a>Obstacle</STRONG> (Thumb, 86 bytes, Stack size 16 bytes, main.o(.text.Obstacle))
+<BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = Obstacle &rArr; delayMs
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinWrite
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delayMs
@@ -1183,7 +1183,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_tm4c123.o(.text)
 </UL>
-<P><STRONG><a name="[7b]"></a>WindowDown_Driver</STRONG> (Thumb, 302 bytes, Stack size 32 bytes, main.o(.text.WindowDown_Driver))
+<P><STRONG><a name="[7b]"></a>WindowDown_Driver</STRONG> (Thumb, 306 bytes, Stack size 32 bytes, main.o(.text.WindowDown_Driver))
 <BR><BR>[Stack]<UL><LI>Max Depth = 240<LI>Call Chain = WindowDown_Driver &rArr; xQueueGenericSend &rArr; prvUnlockQueue &rArr; prvNotifyQueueSetContainer &rArr; prvCopyDataToQueue &rArr; xTaskPriorityDisinherit &rArr; uxListRemove
 </UL>
 <BR>[Calls]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueGenericSend
@@ -1194,7 +1194,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(.text.main)
 </UL>
-<P><STRONG><a name="[7d]"></a>WindowDown_Passenger</STRONG> (Thumb, 302 bytes, Stack size 32 bytes, main.o(.text.WindowDown_Passenger))
+<P><STRONG><a name="[7d]"></a>WindowDown_Passenger</STRONG> (Thumb, 306 bytes, Stack size 32 bytes, main.o(.text.WindowDown_Passenger))
 <BR><BR>[Stack]<UL><LI>Max Depth = 240<LI>Call Chain = WindowDown_Passenger &rArr; xQueueGenericSend &rArr; prvUnlockQueue &rArr; prvNotifyQueueSetContainer &rArr; prvCopyDataToQueue &rArr; xTaskPriorityDisinherit &rArr; uxListRemove
 </UL>
 <BR>[Calls]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueGenericSend
@@ -1205,27 +1205,27 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(.text.main)
 </UL>
-<P><STRONG><a name="[7a]"></a>WindowUp_Driver</STRONG> (Thumb, 388 bytes, Stack size 40 bytes, main.o(.text.WindowUp_Driver))
-<BR><BR>[Stack]<UL><LI>Max Depth = 248<LI>Call Chain = WindowUp_Driver &rArr; xQueueGenericSend &rArr; prvUnlockQueue &rArr; prvNotifyQueueSetContainer &rArr; prvCopyDataToQueue &rArr; xTaskPriorityDisinherit &rArr; uxListRemove
+<P><STRONG><a name="[7a]"></a>WindowUp_Driver</STRONG> (Thumb, 424 bytes, Stack size 32 bytes, main.o(.text.WindowUp_Driver))
+<BR><BR>[Stack]<UL><LI>Max Depth = 240<LI>Call Chain = WindowUp_Driver &rArr; xQueueGenericSend &rArr; prvUnlockQueue &rArr; prvNotifyQueueSetContainer &rArr; prvCopyDataToQueue &rArr; xTaskPriorityDisinherit &rArr; uxListRemove
 </UL>
 <BR>[Calls]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueGenericSend
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Obstacle
-<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueReceive
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinWrite
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinRead
+<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueReceive
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueSemaphoreTake
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delayMs
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(.text.main)
 </UL>
-<P><STRONG><a name="[7c]"></a>WindowUp_Passenger</STRONG> (Thumb, 386 bytes, Stack size 32 bytes, main.o(.text.WindowUp_Passenger))
+<P><STRONG><a name="[7c]"></a>WindowUp_Passenger</STRONG> (Thumb, 424 bytes, Stack size 32 bytes, main.o(.text.WindowUp_Passenger))
 <BR><BR>[Stack]<UL><LI>Max Depth = 240<LI>Call Chain = WindowUp_Passenger &rArr; xQueueGenericSend &rArr; prvUnlockQueue &rArr; prvNotifyQueueSetContainer &rArr; prvCopyDataToQueue &rArr; xTaskPriorityDisinherit &rArr; uxListRemove
 </UL>
 <BR>[Calls]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueGenericSend
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Obstacle
-<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueReceive
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinWrite
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinRead
+<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueReceive
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueSemaphoreTake
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delayMs
 </UL>

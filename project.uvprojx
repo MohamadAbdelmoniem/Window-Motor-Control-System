@@ -463,6 +463,11 @@
               <FileType>5</FileType>
               <FilePath>..\Lab4\tm4c123gh6pm.h</FilePath>
             </File>
+            <File>
+              <FileName>Team8Macro.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Team8Macro.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
